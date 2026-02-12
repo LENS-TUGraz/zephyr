@@ -2776,6 +2776,13 @@ static int big_init_bis(struct bt_iso_big *big, struct bt_iso_chan *bis, uint8_t
 	}
 #endif /* CONFIG_BT_ISO_SYNC_RECEIVER */
 
+#ifdef CONFIG_GRPTLK
+	if (bis_number > 1) {
+		iso_conn->info.type = broadcaster ? BT_ISO_CHAN_TYPE_SYNC_RECEIVER
+							: BT_ISO_CHAN_TYPE_BROADCASTER;
+	}
+#endif /* CONFIG_GRPTLK */
+
 	bt_iso_chan_add(bis->iso, bis);
 
 	sys_slist_append(&big->bis_channels, &bis->node);
@@ -3158,6 +3165,9 @@ static void store_bis_broadcaster_info(const struct bt_hci_evt_le_big_complete *
 
 	info->can_send = true;
 	info->can_recv = false;
+#ifdef CONFIG_GRPTLK
+	info->can_recv = true;
+#endif
 }
 
 void hci_le_big_complete(struct net_buf *buf)
@@ -3356,6 +3366,9 @@ static void store_bis_sync_receiver_info(const struct bt_hci_evt_le_big_sync_est
 	receiver_info->bis_number = iso_conn->info.sync_receiver.bis_number;
 
 	info->can_send = false;
+#ifdef CONFIG_GRPTLK
+	info->can_send = true;
+#endif
 	info->can_recv = true;
 }
 

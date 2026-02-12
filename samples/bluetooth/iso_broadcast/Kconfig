@@ -1,18 +1,22 @@
-# Copyright (c) 2023 Nordic Semiconductor ASA
-# SPDX-License-Identifier: Apache-2.0
+menuconfig GRPTLK
+	bool "GRPTLK [EXPERIMENTAL]"
+	select EXPERIMENTAL
+	default n
 
-mainmenu "Bluetooth: ISO Broadcast"
+if GRPTLK
 
-config ISO_PACKING_INTERLEAVED
-	bool "Use interleaved packing"
-	help
-	  Use interleaved packing between BIS ISO stream subevents.
+choice GRPTLK_ROLE
+    bool "GRPTLK Role"
+    default GRPTLK_BCST
 
-config ISO_PRINT_INTERVAL
-	int "Interval between each packet report"
-	range 1 360000
-	default 1
-	help
-	  Only print the packet report once in a given interval of ISO packets.
+config GRPTLK_BCST
+    bool "GRPTLK Broadcaster Role"
+
+config GRPTLK_RECV
+    bool "GRPTLK Receiver Role"
+
+endchoice
+
+endif # GRPTLK
 
 source "Kconfig.zephyr"
